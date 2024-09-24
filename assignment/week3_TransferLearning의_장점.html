@@ -1,0 +1,685 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Transfer Learning; 전이 학습</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="10b3a35c-b1a1-80d5-a6c3-e05d896dad04" class="page sans"><header><h1 class="page-title">Transfer Learning; 전이 학습</h1><p class="page-description"></p></header><div class="page-body"><p id="79410a26-69f0-413f-be60-a3b81f501e80" class="">Transfer Learning이란 pre-trained neural network를 기반으로 하여 내가 원하는 dataset으로 <mark class="highlight-default"><code>재학습</code></mark> 시키는 것이다.</p><p id="71000124-85dc-457a-93a0-e95deb701f21" class="">2015년에 발표된 이미지 분류용 ResNet-152는 약 6,020만 개의 trainable parameter가 존재하고, 8개의 NVIDIA Tesla K80 GPU(1개당 $5,000)를 사용하여 약 2~3주간 학습했다.</p><p id="10b3a35c-b1a1-806b-aa71-dbe864e2e3a4" class="">학습해야 할 dataset의 크기는 점점 커지고, Neural Network는 점점 더 깊어지는 상황에서(= trainable parameter가 많아지는 상황) parameter들을 random initialized value로부터 시작해서 back propagation을 진행하는 것은 너무나도 많은 금전적, 시간적 비용을 필요로 한다.</p><p id="10b3a35c-b1a1-8072-8ff0-e45f92673d4d" class="">다음과 같은 예를 살펴보자.</p><ul id="10b3a35c-b1a1-8080-9933-ce678a473c56" class="bulleted-list"><li style="list-style-type:disc">훈련에 2주가 걸리는 dataset D1이 있다고 하자. D1 dataset은 인터넷에 존재하는 수 백만 개의 의류 sample들로 이루어져 있다.</li></ul><ul id="10b3a35c-b1a1-804e-aa16-e0f2f9a6ada8" class="bulleted-list"><li style="list-style-type:disc">dataset D2는 어떤 회사 A에서 판매하는 의류 sample들 수 천개로 이루어져 있다(수 천개는 Neural Network로 제대로 된 학습을 하기에는 적은 양이다).<p id="10b3a35c-b1a1-808a-8c04-e43876aff7b0" class="">(이 예시에서는 D1과 D2가 정확한 생김새나 종류는 다르겠지만, ‘의류’라는 공통점을 가진다. 이런 경우를 “D1과 D2의 domain이 유사하다”고 한다.)</p></li></ul><ul id="10b3a35c-b1a1-8093-90dd-dcc4e1828dea" class="bulleted-list"><li style="list-style-type:disc">충분한 data가 있는 D1을 학습하는 경우에는 layer를 점점 깊게 구성하면서 sample들의 일반적인 특징부터 추상적인 특징까지 골고루 학습할 수 있다.</li></ul><ul id="10b3a35c-b1a1-80dc-8816-e20af34becfb" class="bulleted-list"><li style="list-style-type:disc">하지만 data가 충분하지 않은 D2를 학습하는 경우에는 <ul id="10b3a35c-b1a1-8057-91a1-ebd3b8ec9d40" class="bulleted-list"><li style="list-style-type:circle">epoch가 적은 경우:<p id="10b3a35c-b1a1-800c-9427-d2019712ddf0" class="">의류 sample의 종류를 구분하기 위한 특징들을 미처 다 학습하지 못해서 underfitting될 확률이 높다.</p></li></ul><ul id="10b3a35c-b1a1-80f0-a5bb-de97f01dfe2b" class="bulleted-list"><li style="list-style-type:circle">epoch가 많은 경우:<p id="aebe8998-b3ce-4115-9ae2-279523483a50" class="">적은 양의 sample들에 대해서 반복적으로 학습함으로 인해 overfitting될 확률이 높다.</p></li></ul></li></ul><ul id="10b3a35c-b1a1-8099-89f5-d8f5508661c7" class="bulleted-list"><li style="list-style-type:disc">우리는 이를 <mark class="highlight-red"><strong>transfer learning</strong></mark>으로 해결할 수 있다.<p id="10b3a35c-b1a1-80a2-975a-cfa17c2ed47c" class="">우리는 앞서 D1과 D2의 domain이 유사하다라는 사실을 알아냈다.</p></li></ul><ul id="10b3a35c-b1a1-804a-bef5-fd068876d5ff" class="bulleted-list"><li style="list-style-type:disc">D1을 학습한 모델에서는 ‘의류’라는 것에 대해서 충분히 학습했다.<p id="10b3a35c-b1a1-803a-8d06-c4a076eb4240" class="">결국 상의는 어떤 상의인지에 관계없이 ‘목부분’이 존재하고, ‘어깨선’도 존재하고, ‘양 팔’도 존재하고, ‘몸통 부분’도 존재하고, …</p><p id="10b3a35c-b1a1-80f0-a328-c4b3b5d8ddb1" class="">그리고 하의는 ‘허리 부분’이 존재하고, ‘양 다리’가 존재하고, …</p></li></ul><ul id="10b3a35c-b1a1-807f-90f0-eb207c5978c6" class="bulleted-list"><li style="list-style-type:disc">D2의 ‘의류’들도 결국 D1에서 학습한 특징들을 가지고 있다.</li></ul><ul id="10b3a35c-b1a1-80f0-a077-ce35e3878f17" class="bulleted-list"><li style="list-style-type:disc">D1의 model에 총 10개의 layer가 있다고 할 때<ul id="a9734a9a-2012-4d57-9b76-6a3e643f01c5" class="bulleted-list"><li style="list-style-type:circle">layer가 얕은 부분에서는 ‘목부분’, ‘어깨선’, … 등의 <mark class="highlight-default"><code>일반적인 특징</code></mark>을 학습하고,</li></ul><ul id="10b3a35c-b1a1-8041-bebc-e7b78c471533" class="bulleted-list"><li style="list-style-type:circle">layer가 깊어질수록 ‘목부분의 레이스’, ‘목부분의 카라’, ‘어깨선의 절개’ 등의 <mark class="highlight-default"><code>추상적인(구체적인) 특징</code></mark>을 학습한다.</li></ul></li></ul><ul id="221f0962-5d9c-45f6-813d-13ef27ef55ff" class="bulleted-list"><li style="list-style-type:disc">D2의 ‘의류’들은 D1 model이 학습한 <mark class="highlight-default"><code>일반적인 특징</code></mark>에는 대부분 부합할 것이고, <mark class="highlight-default"><code>추상적인 특징</code></mark>에 대해서는 별로 부합하지 않을 것이다.</li></ul><ul id="10b3a35c-b1a1-805b-968c-ff66b7c107b3" class="bulleted-list"><li style="list-style-type:disc">따라서 D2의 model을 학습할 때도 어차피 <mark class="highlight-default"><code>일반적인 특징</code></mark>에 대해서 학습을 할 건데 이미 이 <mark class="highlight-default"><code><span style="border-bottom:0.05em solid">일반적인 특징</span></code></mark><span style="border-bottom:0.05em solid">을 너무나도 잘 학습한 D1 모델</span>이 존재한다.<p id="6198b0cc-84de-4fa4-bf64-528499090003" class="">앞에서 <mark class="highlight-default"><code>일반적인 특징</code></mark>은 얕은 layer에서 주로 학습한다고 했던 것을 기억하자.</p></li></ul><ul id="2cd341ad-30c8-47bb-95d5-65b71d372283" class="bulleted-list"><li style="list-style-type:disc">그러면 transfer learning을 사용하여 <span style="border-bottom:0.05em solid">이미 학습된 D1 모델</span>을 그대로 가져온다.<ul id="f3892471-40d7-409f-963d-20c3bc690e4d" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-default"><code>일반적인 특징</code></mark>에 대해서 더 이상 학습할 필요 없음. 따라서 해당 학습에 걸리는 시간 0초<p id="10b3a35c-b1a1-8098-b5d6-c2c169486886" class=""> (사실 나중에 조금은 학습해야 성능이 더 좋아지는데 일단은 쉬운 이해를 위해서 극단적으로 생각하자.)</p></li></ul><ul id="10b3a35c-b1a1-80d7-8052-dcca24661734" class="bulleted-list"><li style="list-style-type:circle">그리고 D1의 깊은 layer는 <mark class="highlight-default"><code>추상적인 특징</code></mark>을 학습했는데 이건 어차피 D2 sample들에게는 거의 부합하지 않으므로 없애버린다(마지막 3개 layer를 없앴다고 가정).</li></ul><ul id="3bff105f-ffe2-40b3-a795-0f167239f7b4" class="bulleted-list"><li style="list-style-type:circle">그리고 D2 sample의 <span style="border-bottom:0.05em solid">세부 분류를 결정적으로 구분</span>하기 위한 layer들을 추가한다(3개 layer를 추가했다고 가정).<p id="563799ca-1b5a-4808-b06f-f84dfdaa7e02" class=""><span style="border-bottom:0.05em solid">결정적으로 구분</span>하기 위해서는 <mark class="highlight-default"><code>추상적인 특징</code></mark><mark class="highlight-default">을 학습해야 하기 때문에 가장 마지막 단계의 layer로 추가 하는것이 적합하다.</mark></p></li></ul><ul id="10b3a35c-b1a1-80b2-a32e-faf767d82b3a" class="bulleted-list"><li style="list-style-type:circle">이제 학습을 할 단계이다.<ul id="ca38f42d-bdeb-4ea0-a0fa-d3cd72174ad0" class="bulleted-list"><li style="list-style-type:square">기존에는 10개의 layer를 모두 학습해야 했지만, transfer learning을 통해서 얕은 layer 7개에 대한 좋은 학습 결과물(가중치 parameter)을 이미 가지고 있다.</li></ul><ul id="10b3a35c-b1a1-80d3-bbe6-fa2b67f1834d" class="bulleted-list"><li style="list-style-type:square">따라서 3개의 깊은 layer에 대해서만 학습하면 되기 때문에 더욱 집중적으로 학습할 수가 있다.</li></ul></li></ul></li></ul><h1 id="10b3a35c-b1a1-807a-abe4-e67e188eac25" class="">1. 들어가며</h1><h2 id="0de1d7b9-b50e-41e7-ac4f-078b8109d1f8" class="">1.1. 전통적인 machine learning type</h2><p id="10b3a35c-b1a1-8098-8831-fbe9e8984917" class="">전통적인 Machine Learning 분야는 다음과 같이 세 가지로 구분할 수 있다.</p><ul id="d8db25f1-0638-41b7-a82d-e54a8038377a" class="bulleted-list"><li style="list-style-type:disc"><strong>Supervised Learning(지도 학습)</strong><p id="10b3a35c-b1a1-809a-b547-f2b5182844c9" class="">Supervised learning is a type of machine learning where an algorithm is <span style="border-bottom:0.05em solid">trained on labeled data</span>. <br/>This means each <br/><span style="border-bottom:0.05em solid">training example includes an input and a desired output</span>. <br/>The algorithm learns to map inputs to outputs by finding patterns in the data. <br/>It&#x27;s commonly used for tasks like <br/><mark class="highlight-default"><code>classification</code></mark> and <mark class="highlight-default"><code>regression</code></mark>.</p></li></ul><ul id="10b3a35c-b1a1-8058-bf58-ddcb07fd5b3d" class="bulleted-list"><li style="list-style-type:disc"><strong>Unsupervised Learning(비지도 학습)</strong><p id="901bc955-1cfd-46b4-831d-d570b71de883" class="">Unsupervised learning involves training an algorithm on data that <span style="border-bottom:0.05em solid">doesn&#x27;t have labeled responses</span>. <br/>The goal is for the model to <br/><span style="border-bottom:0.05em solid">identify underlying structures or patterns within the data</span> on its own. <br/>It&#x27;s often used for <br/><mark class="highlight-default"><code>clustering</code></mark>, <mark class="highlight-default"><code>dimensionality reduction</code></mark>, and <mark class="highlight-default"><code>association rule learning</code></mark>.</p></li></ul><ul id="c2579501-e3e2-4c94-b402-ecdb22868f68" class="bulleted-list"><li style="list-style-type:disc"><strong>Reinforced Learning(강화 학습)</strong><p id="10b3a35c-b1a1-8007-8bc3-e21dad5adc19" class="">Reinforcement learning is a type of machine learning where an agent learns to make decisions by performing actions and <span style="border-bottom:0.05em solid">receiving feedback in the form of rewards or penalties</span>. <br/>The agent aims to <br/><span style="border-bottom:0.05em solid">learn a strategy that maximizes cumulative rewards over time</span>.<br/>This approach is commonly used in <br/><mark class="highlight-default"><code>robotics</code></mark>, <mark class="highlight-default"><code>game playing</code></mark>, and <mark class="highlight-default"><code>navigation tasks</code></mark>.</p></li></ul><h2 id="132f034e-be2c-4a25-950e-4c53981b234c" class="">1.2. data labeling의 어려움</h2><p id="10b3a35c-b1a1-8066-a199-f76129c8719a" class=""><strong>Supervised Learning</strong>은<strong> </strong>답을 알고 있는 상태에서 학습하기 때문에 비교적 학습이 쉽다.</p><p id="34b3902f-8ca2-4992-acc0-c87cc58de0e6" class="">하지만 labeling하는 작업은 기본적으로 시간과 비용이 많이 든다. quality가 높은 labeling을 위해서는 수 배는 더 많은 시간과 비용이 든다.</p><h2 id="10b3a35c-b1a1-80f8-88f5-d7c862cfacaf" class="">1.3. self-supervised learning의 등장</h2><p id="10b3a35c-b1a1-805f-aeaa-d5c170c115b1" class=""><strong>self-supervised learning</strong>은 사실 unsupervised learning를 응용한 것이다.</p><p id="10b3a35c-b1a1-80d8-ab04-ff1aec2edddd" class="">인터넷에는 <mark class="highlight-default"><code>labeled data</code></mark>는 적지만 <mark class="highlight-default"><code>un-labeled data</code></mark>는 너무나도 충분하게 많다.</p><p id="71de4452-d751-4573-992e-e33d75e5e342" class="">
+</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="d3100060-1921-43b7-b5a9-d14278d8ae01"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><p id="f245c3bf-883a-484b-9609-c16684f54a26" class="">Transfer learning을 NLP에 적용한 model은 google BERT이다.</p><p id="0dbeb307-30b4-4695-9bdd-18a01d31fc20" class="">BERT는</p><ul id="920862c7-d3af-4bde-be75-1be51a07262b" class="bulleted-list"><li style="list-style-type:disc">본인이 실제 예측하고 싶은 분야에 대한 train dataset이 있을 때 model에서 이를 바로 학습하는 것이 아니고, wikipedia 같은 곳에서 그냥 일상적인 NL 문장들에 대해서 학습한다.<ul id="10b3a35c-b1a1-804b-92e9-d0eafe0bddfa" class="bulleted-list"><li style="list-style-type:circle">이때 masked learning을 사용한다(→ labeling resource 없어도 되는 이점)</li></ul><ul id="10b3a35c-b1a1-8068-b74b-fbd6424a382a" class="bulleted-list"><li style="list-style-type:circle">학습을 완료하면 output layer는 제거하고 hidden layers만 남긴다.</li></ul></li></ul><ul id="10b3a35c-b1a1-80cb-b8a1-ee58c837886b" class="bulleted-list"><li style="list-style-type:disc">위 결과물에 추가로 hidden layer 및 본인이 실제 예측하고 싶은 분야에 대한 output layer를 추가한다.<p id="10b3a35c-b1a1-80fd-882a-e28504cd0b70" class="">이때 특정 분야(작업)에 대해 model을 미세 조정하는 것을 fine tuning이라고 한다.</p><ul id="10b3a35c-b1a1-8097-ba52-c9f432a862cf" class="bulleted-list"><li style="list-style-type:circle">그리고 가지고 있던 train dataset을 학습시킨다(최소 1k-2k의 labeled data 필요).</li></ul><ul id="10b3a35c-b1a1-8069-9a1d-cec56eb8f096" class="bulleted-list"><li style="list-style-type:circle">이때는 기존에 wikipedia 학습에서 배웠던 layer들을 이용하여 train dataset과 어떤 차이가 있는지를 중점적으로 학습한다.</li></ul></li></ul><ul id="10b3a35c-b1a1-8058-a562-fac1968865e7" class="bulleted-list"><li style="list-style-type:disc">masked learning을 통해 별도의 labeling 없이 학습할 수 있으므로 인터넷에 있는 대량의 NLP 자료로 전체 구조를 학습할 수 있다.<p id="10b3a35c-b1a1-804e-bce1-e1e34db85f38" class="">따라서 실제 작업에 대한 훈련을 할 때 비교적 적은 train dataset을 가지고 있다고 하더라도 안정적으로 학습할 수 있다.</p></li></ul></div></figure><p id="10b3a35c-b1a1-806f-a6c4-cdd6b59cbfd9" class="">pre-trained dataset과 train dataset의 domain이 유사할수록 fine tuning이 덜 필요하다.</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
