@@ -26,18 +26,21 @@
 - https://arxiv.org/abs/1610.02357
 - https://towardsdatascience.com/review-xception-with-depthwise-separable-convolution-better-than-inception-v3-image-dc967dd42568
 
-> Depthwise Separable Convolution
+> (Original)Depthwise Separable Convolution
 > - Step 1: Depthwise Convolution  
 >   Convolution에서는 모든 입력 채널을 고려하여 하나의 필터를 적용하지만,  
->   Depthwise Convolution에서는 각 채널마다 별도의 필터를 사용.  
->   이로 인해 채널 간의 상호작용은 고려되지 않고 각 채널은 독립적으로 처리
+>   Depthwise Convolution에서는 각 채널마다 **별도의 필터**를 사용.  
+>   이로 인해 **채널 간의 상호작용은 고려되지 않고 각 채널은 독립적**으로 처리
 > - Step 2: Pointwise Convolution  
->   Depthwise Convolution을 통해 각 채널별로 처리된 출력을 다시 결합하기 위해 1x1 Convolution을 적용  
->   이 과정에서 채널 간의 상호작용을 고려하며, Depthwise Convolution으로 축소된 연산 비용을 보충
+>   Depthwise Convolution을 통해 각 채널별로 처리된 출력을 **다시 결합**하기 위해 1x1 Convolution을 적용  
+>   이 과정에서 **채널 간의 상호작용을 고려**하며, Depthwise Convolution으로 축소된 연산 비용을 보충
 
 > Xception에는 Step 2 이후 Step 1을 수행  
 > 원래 Inception 모듈에서는 첫 번째 연산 후 비선형성이 있으나,  
 > 수정된 깊이별 분리형 합성곱인 Xception에서는 중간 ReLU 비선형성이 없음
+
+> 즉 Original CNN, SENet, (Original)Depthwise Separable Convolution, Xception으로 나뉘는 것.
+> 이게 결국 attention 개념이다.
 
 4. CBAM (ECCV 2018)
 - arxiv.org/pdf/1807.06521.pdf
@@ -46,7 +49,18 @@
 
 > CBAM(Channel and Spatial Attention Module)은 CNN(Convolutional Neural Networks)에서 성능을 향상시키기 위해 제안된 어텐션 모듈  
 > CBAM은 입력 피처 맵에서 중요한 정보를 강조하고 덜 중요한 정보를 억제함으로써, 네트워크가 더 중요한 특성에 집중할 수 있도록 도움  
-> Channel Attention과 Spatial Attention의 두 가지 어텐션 메커니즘을 결합한 구조
+> Channel Attention과 Spatial Attention의 두 가지 어텐션 메커니즘을 결합한 구조(위 3번까지는 Channel Attention만 구하던 것임)
+```
+Yes, you're correct in distinguishing the attention mechanisms used in **Xception** and **CBAM** (Convolutional Block Attention Module).
+
+- **Xception**: While Xception (Extreme Inception) focuses on a deep convolutional architecture using depthwise separable convolutions, it does not explicitly implement attention mechanisms like channel or spatial attention as part of its core architecture. It uses efficient convolution techniques but does not use attention modules by default.
+
+- **CBAM**: On the other hand, **CBAM** incorporates **both channel attention and spatial attention** mechanisms. Channel attention in CBAM focuses on the importance of different feature channels (which can be interpreted as the network's focus on "what" is important), while **spatial attention** identifies "where" the most relevant features are located in the image. So CBAM refines the feature representation both across channels and spatially.
+
+To sum up:
+- **Xception** does not explicitly use channel or spatial attention mechanisms.
+- **CBAM** enhances feature representations by applying **both channel attention** and **spatial attention**, thus providing a more refined approach to attention compared to using only channel attention.
+```
 
 > Channel Attention Module : 먼저 입력 피처 맵에 대해 채널별로 중요한 정보를 학습하고, 채널별로 가중치를 적용
 > - https://zzziito.tistory.com/52
@@ -55,3 +69,5 @@
 > - https://zzziito.tistory.com/53
 
 > Global Average Pooling(정보를 압축) + Global Max Pooling(가장 의미 있는 정보 추출)
+
+> 결국 점점 무거워지는 딥러닝 모델을 경량화시키려는 것이 attention이다.
